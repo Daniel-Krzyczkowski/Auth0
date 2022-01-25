@@ -348,3 +348,4 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+/src/fga-samples/TMF.Auth0.FGA.WebApp/appsettings.json

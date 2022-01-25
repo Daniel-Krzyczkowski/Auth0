@@ -1,0 +1,59 @@
+﻿@page "/fetchdata"
+@inject NotificationService NotificationService
+@inject TMF.Auth0.FGA.WebApp.Authorization.FgaAuthorizationHandler FgaAuthorizationHandler
+
+<PageTitle>Prescriptions</PageTitle>
+
+@using TMF.Auth0.FGA.WebApp.Data
+
+<h1>Prescription details</h1>
+<RadzenNotification />
+
+
+<div class="row justify-content-center">
+    <div class="col-md-12 d-flex align-items-end justify-content-center" style="margin-top: 16px;">
+        <img src="/images/prescription.jpg" width="200px" />
+    </div>
+    <br />
+    <div class="col-md-12 d-flex align-items-end justify-content-center" style="margin-top: 16px;">
+        <button class="btn btn-primary" style="margin-bottom: 10px; margin-right:10px;" @onclick="DisplayPrescriptionAsync">Display</button>
+        <button class="btn btn-primary" style="margin-bottom: 10px; margin-right:10px;" @onclick="EditPrescriptionAsync">Edit</button>
+    </div>
+</div>
+
+@code {
+
+    private async Task DisplayPrescriptionAsync()
+    {
+        var canReadPrescription = await FgaAuthorizationHandler.CheckIfActionAllowedAsync("reader");
+        if (canReadPrescription)
+        {
+            var success = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "You can display prescription",
+                    Detail = "You have reader permission",
+                    Duration = 4000
+                };
+            NotificationService.Notify(success);
+
+        }
+    }
+
+    private async Task EditPrescriptionAsync()
+    {
+        var canEditPrescription = await FgaAuthorizationHandler.CheckIfActionAllowedAsync("writer");
+        if (!canEditPrescription)
+        {
+            var error = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "You cannot modify prescription",
+                    Detail = "You do not have writer permission",
+                    Duration = 4000
+                };
+            NotificationService.Notify(error);
+
+        }
+    }
+}
